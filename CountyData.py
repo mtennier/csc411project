@@ -1,12 +1,13 @@
 import pandas as pd
 #  remember source .venv/bin/activate     
-""" 
+
+def getCountyPoliticalData()->pd.DataFrame:
+    """ 
     Functon for getting the voter county data.
     Retrieves the data from the CSV, converts it to a
     pandas data frame, parses it & removes redundant information,
     then returns the frame.
-"""
-def getCountyData()->pd.DataFrame:
+    """
     df = pd.read_csv('county_Feb21.csv',header=4)
     # Drop all NaN rows - this also drops the statewide rows for us
     df.dropna(inplace=True) 
@@ -27,12 +28,13 @@ def getCountyData()->pd.DataFrame:
     
     return df
 
-""" Thought more readable instead of using lambda 
+
+def determineParty(dem_count,rep_count)->str:
+    """ Thought more readable instead of using lambda 
     Determines whethers there's more registered democrats (returns DEM)
     or more registered republicans (returns REP)
     Else, returns EQ
-"""
-def determineParty(dem_count,rep_count)->str:
+    """
     category = ''
     if dem_count > rep_count:
         category = 'DEM'
@@ -56,21 +58,46 @@ def determinePercentage(dem_count,rep_count)->float:
     return percentage 
     """
     return dem_count/rep_count
-    
 
-""" 
+def getCountyVoterCategoryData()->pd.DataFrame:
+    """ 
     getCountyVoterCategoryData
     Using the parsed data, determines the voter category for the county
     based on total registered demoocrats and republicans.
     ie if a county has more democrats than republicans, it is labelled as
     republican
- """
-def getCountyVoterCategoryData()->pd.DataFrame:
-    original_df = getCountyData() # Get the old data frame
-    print(original_df)
+    """
+    original_df = getCountyPoliticalData() # Get the old data frame
+    #print(original_df)
     new_df = original_df.filter(['COUNTY'],axis = 1) # Copy over the coounty axi
     new_df['PARTY'] = original_df.apply(lambda x: determineParty(dem_count=x['DEM'],rep_count=x['REP']),axis = 1)
     new_df['RATIO'] = original_df.apply(lambda x: determinePercentage(dem_count=x['DEM'],rep_count=x['REP']),axis = 1)
-    print(new_df)
+    #print(new_df)
+    return new_df
 
-getCountyVoterCategoryData() # Call for testing
+def addFipsData()->pd.DataFrame:
+    '''
+    addFipsData
+    Fips codes are needed to us the plotly express map tool.
+    This uses another CSV that contains fips codes
+    to add them to the county data.
+    '''
+    old_df = getCountyVoterCategoryData()
+    fips_df = pd.read_csv('New_York_State_ZIP_Codes-County_FIPS_Cross-Reference.csv')
+    to_drop = ['State FIPS','County Code', 'ZIP Code', 'File Date']
+    fips_df.drop(to_drop,axis=1,inplace=True)
+    fips_df.drop_duplicates(inplace=True)
+    old_df['COUNTY'] = old_df['COUNTY'].str.strip() # Discovered this too fucking late. Ugh
+    new_df = pd.merge(old_df,fips_df,left_on='COUNTY',right_on='County Name')
+    new_df.drop('County Name',axis=1,inplace=True)
+    new_df.rename(columns={'County FIPS':'FIPS'},inplace=True)
+    print(new_df)
+    return new_df
+
+def getCountyData():
+    '''
+    getCountyData
+    Retrieves the finalized county data.
+    Wrapper for readability.
+    '''
+    return addFipsData()
