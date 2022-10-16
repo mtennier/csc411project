@@ -91,7 +91,6 @@ def addFipsData()->pd.DataFrame:
     new_df = pd.merge(old_df,fips_df,left_on='COUNTY',right_on='County Name')
     new_df.drop('County Name',axis=1,inplace=True)
     new_df.rename(columns={'County FIPS':'FIPS'},inplace=True)
-    print(new_df)
     return new_df
 
 def getCountyData():
