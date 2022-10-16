@@ -11,5 +11,8 @@ https://www.elections.ny.gov/EnrollmentCounty.html
 https://data.nysed.gov/downloads.php
 (Grad Rate Database)
 
+# fips numbers are needed for the first visualization, the file we used can be found here:
+https://data.ny.gov/w/juva-r6g2/caer-yrtv?cur=FHSIbLUwMDP&from=VgnqclHtMDJ
+
 # anaconda and plotly need to be installed before using these files
 
