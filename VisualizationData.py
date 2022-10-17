@@ -12,11 +12,11 @@ class VisualizationData:
             Assumes you arent stupid and won't enter an invalid number
         '''
         if option == 1:
-            self.df = getDataFrame1()
+            self.df = self.getDataFrame1()
         elif option == 2:
-            self.df = getDataFrame2()
+            self.df = self.getDataFrame2()
         else:
-            self.df = getDataFrame3()
+            self.df = self.getDataFrame3()
             
     def getDataFrame1(self) -> pd.DataFrame:
         """ 
@@ -38,8 +38,7 @@ class VisualizationData:
             Returns a single dataframe containing all of the data needed
             for the second visualization - the scatterplot.
         """
-        #TODO
-        return None
+        return getSchoolData2()
     def getDataFrame3(self):
         """ 
             getDataFrame3

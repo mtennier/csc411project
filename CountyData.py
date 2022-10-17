@@ -98,5 +98,6 @@ def getCountyData():
     getCountyData
     Retrieves the finalized county data.
     Wrapper for readability.
+    Returns the finalized county data frame.
     '''
     return addFipsData()
