@@ -20,34 +20,90 @@ dataframes = {}
 for subgroup_name,subgroup_category in subgroups.items():
     dataframes[subgroup_name] = data_object.df.loc[data_object.df['subgroup_code']==subgroup_category]
 
-subgroup_category = 1
-#print(dataframes)
-df_one = data_object.df.loc[data_object.df['subgroup_code']==subgroup_category]
-#print(df_one)
 
+# Create figure
+fig = go.Figure()
 
-# Create a bunch of figures
+""" 
+    Each scatterplot technically is 3 traces.
+    We create these three traces at once, and then add them to the list.
+    Then, when we create the buttons, they update 3 traces at once.
+    Clever
+"""
 
-#fig = go.Figure()
-
-""" fig = px.scatter(df_one, x="enroll_cnt", y="dropout_pct", color="location category",
-                hover_data=['aggregation_name']) """
-
-traces = []
-buttons = []
-i = 0
+# Create traces
 for subgroup_name, df in dataframes.items(): 
-    visible = [False] * len(dataframes)
-    visible[i] = True
-    traces.append(px.scatter(df, x="enroll_cnt", y="dropout_pct", color="location category",
-                hover_data=['aggregation_name']).update_traces(visible = True if i==0 else False).data[0])
-    buttons.append(dict(label=subgroup_name,
-                        method="update",
-                        args=[{"visible":visible},
-                              {"title":f"{subgroup_name}"}]))
+    df_one = df.loc[df['location category']=='NYC']
+    trace1 = go.Scatter(
+                x= df_one['enroll_cnt'],
+                y= df_one['dropout_pct'],
+                text = df_one['aggregation_name'],
+                name = 'NYC',
+                mode = 'markers',
+                hovertemplate = "<b>%{text}</b><br><br>" +
+                "Dropout percentage: %{y}% "
+                )
+    df_two = df.loc[df['location category']=='Buffalo, Rochester, Yonkers, or Syracuse'] 
+    trace2 = go.Scatter(
+                x= df_two['enroll_cnt'],
+                y= df_two['dropout_pct'],
+                text = df_two['aggregation_name'],
+                name = 'Buffalo, Rochester, Yonkers, or Syracuse',
+                mode = 'markers',
+                hovertemplate = "<b>%{text}</b><br><br>" +
+                "Dropout percentage: %{y}% "
+                )
+    df_three = df.loc[df['location category']=='Non-major city school']
+    trace3 = go.Scatter(
+                x= df_three['enroll_cnt'],
+                y= df_three['dropout_pct'],
+                text = df_three['aggregation_name'],
+                name = 'Other',
+                mode = 'markers',
+                hovertemplate = "<b>%{text}</b><br><br>" +
+                "Dropout percentage: %{y}% "
+                )
+    fig.add_trace(trace1)
+    fig.add_trace(trace2)
+    fig.add_trace(trace3)
 
+# Show only first 3 traces
+
+# Figures 0, 1 and 2 are what we want so we start at 3
+for i in range(3,len(subgroups)*3):
+    fig.update_traces(visible=False,selector = i)
+
+# Add buttons
+
+# Function for this
+def create_layout_button(k, subgroup_name):
+        visibility= [False]*3*len(subgroups) # We have 3 * len(subgroup) items
+        for tr in range(3*k, 3*k+3):
+            visibility[tr] =True
+        return dict(label = subgroup_name,
+                    method = 'restyle',
+                    args = [{'visible': visibility,
+                             'title': subgroup_name,
+                             'showlegend': True}])
+
+button_list = []
+i = 0
+for subgroup_name,value in subgroups.items():
+    button_list.append(create_layout_button(i,subgroup_name))
     i+=1
-updatemenus = [{'active':0, "buttons":buttons}]
-fig = go.Figure(data=traces,
-                 layout=dict(updatemenus=updatemenus))
+    
+fig.update_layout(
+        updatemenus=[go.layout.Updatemenu(
+            active = 0,
+            buttons = button_list
+            )
+        ])
+fig.update_layout(
+    height=800,
+    title_text='High School Dropout Rates in New York State ',
+    xaxis_title="Number of Students",
+    yaxis_title="Dropout Rate (percent)",
+    legend_title = "Resource Allocation Category"
+)
+
 fig.show()

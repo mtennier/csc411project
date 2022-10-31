@@ -2,7 +2,7 @@ import pandas as pd
 from CountyData import *
 from SchoolData import *
 class VisualizationData:
-    def VisualizationData(self,option):
+    def __init__(self,option):
         '''
             Creates new object containing all the visualization data needed.
             Option is for choosing which visualization.
