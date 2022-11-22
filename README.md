@@ -17,7 +17,7 @@ https://data.ny.gov/w/juva-r6g2/caer-yrtv?cur=FHSIbLUwMDP&from=VgnqclHtMDJ
 
 # INSTALLATION
 
-# intall pip
+# install pip
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 (follow the commands given under the "Ensure you can run pip from the command line")
 

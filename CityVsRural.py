@@ -36,7 +36,7 @@ for subgroup_name,subgroup_category in subgroups.items():
 
 # Create figure
 fig = make_subplots(rows=1,cols=2,specs=[[{"type":"mapbox"},{"type":"scatter"}]],subplot_titles=[
-    "New York County Map and Political Affiliation","Dropout rate by Needs to Resource Category"
+    "New York County Map and Political Affiliation","Dropout Rate by Needs to Resource Category"
 ])
     # Each scatterplot technically is 3 traces.
     # We create these three traces at once, and then add them to the list.

@@ -89,5 +89,3 @@ def getSchoolData2() -> pd.DataFrame:
     new_df.loc[new_df['county_name'] == 'New york','county_name'] = 'New York'
     #print(new_df) #for testing
     return new_df
-
-getSchoolData2()
