@@ -43,7 +43,6 @@ however if you want to do a different one or I included some comments on how to 
 2 - uncomment line 23
 3 - rerun the code
 
-# more of these can be added if you would like it to show a different idea, just let me know or you can also
-# try editing the statements based on the code comments. I can also record these parts.
+# more of these can be added if you would like it to show a different idea, just let me know or you can also try editing the statements based on the code comments. I can also record these parts.
 
 # Also full screen before recording anything - thing get really compressed if you dont.
