@@ -59,6 +59,12 @@ def determinePercentage(dem_count,rep_count)->float:
     """
     return dem_count/rep_count
 
+def determinePartyNumber(dem_count,rep_count):
+    if dem_count > rep_count:
+        return 1
+    else:
+        return 0
+
 def getCountyVoterCategoryData()->pd.DataFrame:
     """ 
     getCountyVoterCategoryData
@@ -69,9 +75,11 @@ def getCountyVoterCategoryData()->pd.DataFrame:
     """
     original_df = getCountyPoliticalData() # Get the old data frame
     #print(original_df)
-    new_df = original_df.filter(['COUNTY'],axis = 1) # Copy over the coounty axi
+    new_df = original_df.filter(['COUNTY'],axis = 1) # Copy over the coounty axis
     new_df['PARTY'] = original_df.apply(lambda x: determineParty(dem_count=x['DEM'],rep_count=x['REP']),axis = 1)
     new_df['RATIO'] = original_df.apply(lambda x: determinePercentage(dem_count=x['DEM'],rep_count=x['REP']),axis = 1)
+    new_df['PARTYNUM'] = original_df.apply(lambda x: determinePartyNumber(dem_count=x['DEM'],rep_count=x['REP']),axis = 1)
+
     #print(new_df)
     return new_df
 
@@ -84,6 +92,7 @@ def addFipsData()->pd.DataFrame:
     '''
     old_df = getCountyVoterCategoryData()
     fips_df = pd.read_csv('New_York_State_ZIP_Codes-County_FIPS_Cross-Reference.csv')
+    fips_df.loc[fips_df['County Name'] == 'St. Lawrence', 'County Name'] = 'St.Lawrence'
     to_drop = ['State FIPS','County Code', 'ZIP Code', 'File Date']
     fips_df.drop(to_drop,axis=1,inplace=True)
     fips_df.drop_duplicates(inplace=True)

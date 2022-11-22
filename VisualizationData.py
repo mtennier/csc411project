@@ -26,11 +26,7 @@ class VisualizationData:
             Additional data has also been included, in case more interactivity is to be
             added.  
         """
-        county_political_df = getCountyData()
-        school_df = getSchoolData1()
-        new_df = pd.merge(county_political_df,school_df,left_on = 'COUNTY',right_on = 'county_name')
-        new_df.drop('county_name',axis=1,inplace=True)
-        return new_df
+        return getCountyData()
 
     def getDataFrame2(self):
         """ 
@@ -43,8 +39,11 @@ class VisualizationData:
         """ 
             getDataFrame3
             Returns a single dataframe containing all of the data needed
-            for the third visualization - the area chart.
+            for both in one dataframe.
         """
-        #TODO
-        return None
+        county_political_df = getCountyData()
+        school_df = getSchoolData2()
+        new_df = pd.merge(school_df,county_political_df,left_on ='county_name',right_on = 'COUNTY')
+        new_df.drop('county_name',axis=1,inplace=True)
+        return new_df
 

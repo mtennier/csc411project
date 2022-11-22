@@ -69,12 +69,10 @@ def getSchoolData2() -> pd.DataFrame:
         Returns a dataframe containing the finalized needed school data for
         visualization 2.
     """
-    # TODO: might want to look at only 4 year cohorts.
     old_df = initialParseSchoolData()
     #print(old_df)
     # Get the aggregation column for school names
     new_df = old_df.loc[old_df['aggregation_index']==4] # Aggregation column for schools
-    #new_df = new_df.loc[new_df['subgroup_code']==1] might want to use additional categories
     drop_categories = ['aggregation_index','aggregation_type','aggregation_code','nrc_desc','nyc_ind']
     new_df.drop(drop_categories,axis=1,inplace=True)
     new_df['location category'] = new_df.apply(lambda x: resourceAllocationCategory(c= x['nrc_code']),axis=1)
@@ -86,17 +84,10 @@ def getSchoolData2() -> pd.DataFrame:
     new_df['dropout_pct'] = old_df['dropout_pct'].str.strip('%')
     new_df.drop(new_df.loc[new_df['dropout_pct']=='-'].index, inplace=True)
     new_df[['dropout_pct']] = new_df[['dropout_pct']].apply(pd.to_numeric)
-    new_df['county_name']=new_df.apply(lambda x: x['county_name'].capitalize(),axis=1) # Change formatting of county names 
+    new_df['county_name']=new_df.apply(lambda x: x['county_name'].capitalize(),axis=1) # Change formatting of county names
     new_df.loc[new_df['county_name'] == 'Saint lawrence','county_name'] = 'St.Lawrence'
+    new_df.loc[new_df['county_name'] == 'New york','county_name'] = 'New York'
     #print(new_df) #for testing
     return new_df
 
-def getSchoolData3()-> pd.DataFrame:
-    """ 
-        Parses the school data for Visualization 3 - the bar graph.
-        Removes all unneeded columns and grabs the aggregations we need.
-        Returns a dataframe containing the finalized needed school data for
-        visualization 3.
-    """
-    #TODO
-    return None
+getSchoolData2()
